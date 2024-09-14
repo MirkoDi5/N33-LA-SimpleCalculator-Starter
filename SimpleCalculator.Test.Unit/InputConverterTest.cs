@@ -1,93 +1,50 @@
-using System;
+=using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SimpleCalculator.Test.Unit
 {
     [TestClass]
-    public class CalculatorEngineTest
+    public class InputConverterTest
     {
-        private readonly CalculatorEngine _calculatorEngine = new CalculatorEngine();
+        private readonly InputConverter _inputConverter = new InputConverter();
 
         [TestMethod]
-        public void AddsTwoNumbersAndReturnsValidResultForNonSymbolOperation()
+        public void ConvertsValidStringInputIntoDouble()
         {
-            int number1 = 1;
-            int number2 = 2;
-            double result = _calculatorEngine.Calculate("add", number1, number2);
-            Assert.AreEqual(3, result);
+            string inputNumber = "5";
+            double convertedNumber = _inputConverter.ConvertInputToNumeric(inputNumber);
+            Assert.AreEqual(5, convertedNumber);
         }
 
         [TestMethod]
-        public void AddsTwoNumbersAndReturnsValidResultForSymbolOperation()
+        [ExpectedException(typeof(ArgumentException))]
+        public void FailsToConvertsInvalidStringInputIntoDouble()
         {
-            int number1 = 1;
-            int number2 = 2;
-            double result = _calculatorEngine.Calculate("+", number1, number2);
-            Assert.AreEqual(3, result);
+            string inputNumber = "*";
+            double convertedNumber = _inputConverter.ConvertInputToNumeric(inputNumber);
+            Assert.AreEqual(2, convertedNumber);
+        }
+    }
+
+    public class InputConverter
+    {
+        public InputConverter()
+        {
+
         }
 
-        [TestMethod]
-        public void SubtractsTwoNumbersAndReturnsValidResult()
+        public double ConvertInputToNumeric(string input)
         {
-            int number1 = 5;
-            int number2 = 3;
-            double result = _calculatorEngine.Calculate("subtract", number1, number2);
-            Assert.AreEqual(2, result);
-        }
 
-        [TestMethod]
-        public void SubtractsTwoNumbersAndReturnsValidResultForSymbolOperation()
-        {
-            int number1 = 5;
-            int number2 = 3;
-            double result = _calculatorEngine.Calculate("-", number1, number2);
-            Assert.AreEqual(2, result);
+            double result;
+            if (double.TryParse(input, out result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid input");
+            }
         }
-
-        [TestMethod]
-        public void MultipliesTwoNumbersAndReturnsValidResult()
-        {
-            int number1 = 5;
-            int number2 = 3;
-            double result = _calculatorEngine.Calculate("multiply", number1, number2);
-            Assert.AreEqual(15, result);
-        }
-
-        [TestMethod]
-        public void MultipliesTwoNumbersAndReturnsValidResultForSymbolOperation()
-        {
-            int number1 = 5;
-            int number2 = 3;
-            double result = _calculatorEngine.Calculate("*", number1, number2);
-            Assert.AreEqual(15, result);
-        }
-
-        [TestMethod]
-        public void DividesTwoNumbersAndReturnsValidResult()
-        {
-            int number1 = 10;
-            int number2 = 2;
-            double result = _calculatorEngine.Calculate("divide", number1, number2);
-            Assert.AreEqual(5, result);
-        }
-
-        [TestMethod]
-        public void DividesTwoNumbersAndReturnsValidResultForSymbolOperation()
-        {
-            int number1 = 10;
-            int number2 = 2;
-            double result = _calculatorEngine.Calculate("/", number1, number2);
-            Assert.AreEqual(5, result);
-        }
-
-        [TestMethod]
-        public void RaisesNumberToPowerAndReturnsValidResult()
-        {
-            int number1 = 2;
-            int number2 = 3;
-            double result = _calculatorEngine.Calculate("power", number1, number2);
-            Assert.AreEqual(8, result);
-        }
-
     }
 }
